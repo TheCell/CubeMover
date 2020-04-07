@@ -1,31 +1,87 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WalkingCube : MonoBehaviour
 {
 	[SerializeField] private float tumblingDuration = 0.2f;
 	[SerializeField] private Joystick joystick;
+	[SerializeField] private LayerMask floorgroupMask;
+	[SerializeField] private LayerMask floortileMask;
 	private bool justMoved = false;
 	private bool isTumbling = false;
+	private bool isDead = false;
 
 	private void Update()
 	{
-		var dir = Vector3.zero;
-		float leftRightMove = joystick.Horizontal;
-		if (Mathf.Abs(leftRightMove) > 0.5f && !justMoved)
+		if (isDead)
 		{
-			dir.x = leftRightMove;
-			justMoved = true;
-		}
-		else
-		{
-			dir.z = 1;
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			return;
 		}
 
+		var dir = Vector3.zero;
+		float leftRightMove = joystick.Horizontal;
+		//if (Mathf.Abs(leftRightMove) > 0.5f && !justMoved)
+		//{
+		//	dir.x = leftRightMove;
+		//	justMoved = true;
+		//}
+		//else
+		//{
+		//	dir.z = 1;
+		//}
+
+		if (!isTumbling)
+		{
+			CheckGroundAndDie();
+			StopFloorInFront();
+		}
+
+		dir.z = 1;
 		if (dir != Vector3.zero && !isTumbling)
 		{
 			StartCoroutine(Tumble(dir));
+		}
+	}
+
+	private void StopFloorInFront()
+	{
+		Vector3 currentCubePos = transform.position;
+		Vector3 rayStartPos = new Vector3(currentCubePos.x, currentCubePos.y + 0.5f, currentCubePos.z + 0.5f);
+		Vector3 rayAimPos = new Vector3(rayStartPos.x, rayStartPos.y - 2f, 2);
+		RaycastHit rayHit;
+		Ray stopRay = new Ray(rayStartPos, rayAimPos);
+		if (Physics.Raycast(stopRay, out rayHit, 5f, floorgroupMask.value))
+		{
+			//Debug.DrawRay(rayStartPos, rayAimPos, Color.red, 2f);
+			//Debug.Log(rayHit.collider.name);
+			MoveGroundPiece moveGroundPiece = rayHit.collider.GetComponent<MoveGroundPiece>();
+			if (moveGroundPiece != null)
+			{
+				moveGroundPiece.isActive = false;
+			}
+		}
+
+	}
+
+	private void CheckGroundAndDie()
+	{
+		Vector3 currentCubePos = transform.position;
+		Vector3 rayStartPos = currentCubePos;
+		Vector3 rayAimPos = new Vector3(rayStartPos.x, rayStartPos.y - 2f, 0);
+		RaycastHit rayHit;
+		Ray deathRay = new Ray(rayStartPos, rayAimPos);
+		//Debug.DrawRay(rayStartPos, rayAimPos, Color.red, 2f);
+		if (Physics.Raycast(deathRay, out rayHit, 5f, floortileMask.value))
+		{
+			Debug.Log("hit floor");
+		}
+		else
+		{
+			Debug.Log("you die");
+			isDead = true;
 		}
 	}
 
