@@ -7,8 +7,8 @@ public class MoveGroundPiece : MonoBehaviour
 	[SerializeField] private Joystick joystick;
 	[SerializeField] private bool isActive = true;
 	public float movespeed = 5;
-	private float minX = -2.4f;
-	private float maxX = 1.58f;
+	private float minX = -1.92f;
+	private float maxX = 2.08f;
 	private Vector3 gridZeroPos;
 
 	public bool IsActive
@@ -45,16 +45,8 @@ public class MoveGroundPiece : MonoBehaviour
 		Vector3 currentPos = transform.position;
 		float gridOffset = (gridZeroPos.x % 1);
 		float gridpointAtSameMajor = gridOffset + (int)currentPos.x;
-		if (gridpointAtSameMajor > currentPos.x)
-		{
-			Debug.Log(gridpointAtSameMajor + " is bigger than " + currentPos.x);
-		}
-		else
-		{
-			Debug.Log(gridpointAtSameMajor + " is smaller than " + currentPos.x);
-		}
 
-		currentPos.x = (currentPos.x % 1) + gridOffset;
+		currentPos.x = Mathf.Round(currentPos.x) + gridOffset;
 		transform.position = currentPos;
 	}
 
