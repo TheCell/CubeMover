@@ -53,6 +53,11 @@ public class MoveGroundPiece : MonoBehaviour
 	private void MoveGroundTileDynamic()
 	{
 		float moveAmount = joystick.Horizontal;
+		if (moveAmount == 0)
+		{
+			SnapToGrid();
+			return;
+		}
 		Vector3 currentPos = transform.position;
 		currentPos.x = currentPos.x + movespeed * moveAmount * Time.deltaTime;
 		if (currentPos.x > maxX)
