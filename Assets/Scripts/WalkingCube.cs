@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class WalkingCube : MonoBehaviour
 {
 	[SerializeField] private float tumblingDuration = 0.2f;
+	[SerializeField] private float deathDuration = 0.2f;
 	[SerializeField] private Joystick joystick;
 	[SerializeField] private LayerMask floorgroupMask;
 	[SerializeField] private LayerMask floortileMask;
@@ -13,9 +14,22 @@ public class WalkingCube : MonoBehaviour
 	private bool justMoved = false;
 	private bool isTumbling = false;
 	private bool isDead = false;
-
+	private bool animateDead = false;
+	
 	private void Update()
 	{
+		if (!isTumbling && !isDead)
+		{
+			CheckGroundAndDie();
+			StopFloorInFront();
+		}
+
+		if (animateDead)
+		{
+			StartCoroutine(DeathFall());
+			return;
+		}
+
 		if (isDead)
 		{
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -33,12 +47,6 @@ public class WalkingCube : MonoBehaviour
 		//{
 		//	dir.z = 1;
 		//}
-
-		if (!isTumbling)
-		{
-			CheckGroundAndDie();
-			StopFloorInFront();
-		}
 
 		dir.z = 1;
 		if (dir != Vector3.zero && !isTumbling)
@@ -83,7 +91,7 @@ public class WalkingCube : MonoBehaviour
 		else
 		{
 			//Debug.Log("you die");
-			isDead = true;
+			animateDead = true;
 		}
 	}
 
@@ -93,6 +101,23 @@ public class WalkingCube : MonoBehaviour
 		MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
 		materialProperty.SetColor("_Color", trackColor);
 		floorRenderer.SetPropertyBlock(materialProperty);
+	}
+
+	IEnumerator DeathFall()
+	{
+		float t = 0.0f;
+
+		while (t < deathDuration)
+		{
+			t += Time.deltaTime;
+			Vector3 currentpos = transform.position;
+			currentpos.y -= 3.5f * Time.deltaTime;
+			transform.position = currentpos;
+			yield return null;
+		}
+
+		animateDead = false;
+		isDead = true;
 	}
 
 	IEnumerator Tumble(Vector3 direction)
