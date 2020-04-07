@@ -5,15 +5,31 @@ using UnityEngine;
 public class MoveGroundPiece : MonoBehaviour
 {
 	[SerializeField] private Joystick joystick;
+	[SerializeField] private bool isActive = true;
 	public float movespeed = 5;
-	public bool isActive = true;
 	private float minX = -2.4f;
 	private float maxX = 1.58f;
+	private Vector3 gridZeroPos;
 
-    private void Start()
-    {
-        
-    }
+	public bool IsActive
+	{
+		get
+		{
+			return isActive;
+		}
+		set
+		{
+			SnapToGrid();
+			SetTextureHighlight(value);
+			isActive = value;
+		}
+	}
+
+	private void Start()
+	{
+		gridZeroPos = transform.position;
+		SetTextureHighlight(isActive);
+	}
 
 	private void Update()
     {
@@ -22,6 +38,24 @@ public class MoveGroundPiece : MonoBehaviour
 			return;
 		}
 		MoveGroundTileDynamic();
+	}
+
+	private void SnapToGrid()
+	{
+		Vector3 currentPos = transform.position;
+		float gridOffset = (gridZeroPos.x % 1);
+		float gridpointAtSameMajor = gridOffset + (int)currentPos.x;
+		if (gridpointAtSameMajor > currentPos.x)
+		{
+			Debug.Log(gridpointAtSameMajor + " is bigger than " + currentPos.x);
+		}
+		else
+		{
+			Debug.Log(gridpointAtSameMajor + " is smaller than " + currentPos.x);
+		}
+
+		currentPos.x = (currentPos.x % 1) + gridOffset;
+		transform.position = currentPos;
 	}
 
 	private void MoveGroundTileDynamic()
@@ -39,5 +73,24 @@ public class MoveGroundPiece : MonoBehaviour
 		}
 
 		transform.position = currentPos;
+	}
+
+	private void SetTextureHighlight(bool isOn)
+	{
+		Renderer[] floorRenderers = gameObject.GetComponentsInChildren<Renderer>();
+		MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+		if (isOn)
+		{
+			materialProperty.SetFloat("_isToggled", 1f);
+		}
+		else
+		{
+			materialProperty.SetFloat("_isToggled", 0f);
+		}
+
+		for (int i = 0; i < floorRenderers.Length; i++)
+		{
+			floorRenderers[i].SetPropertyBlock(materialProperty);
+		}
 	}
 }

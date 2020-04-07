@@ -9,6 +9,7 @@ public class WalkingCube : MonoBehaviour
 	[SerializeField] private Joystick joystick;
 	[SerializeField] private LayerMask floorgroupMask;
 	[SerializeField] private LayerMask floortileMask;
+	[SerializeField] private Color trackColor = new Color(0.3058823f, 0.8196079f, 0.3303653f);
 	private bool justMoved = false;
 	private bool isTumbling = false;
 	private bool isDead = false;
@@ -50,7 +51,7 @@ public class WalkingCube : MonoBehaviour
 	{
 		Vector3 currentCubePos = transform.position;
 		Vector3 rayStartPos = new Vector3(currentCubePos.x, currentCubePos.y + 0.5f, currentCubePos.z + 0.5f);
-		Vector3 rayAimPos = new Vector3(rayStartPos.x, rayStartPos.y - 2f, 2);
+		Vector3 rayAimPos = new Vector3(rayStartPos.x, rayStartPos.y - 2f, 0.5f);
 		RaycastHit rayHit;
 		Ray stopRay = new Ray(rayStartPos, rayAimPos);
 		if (Physics.Raycast(stopRay, out rayHit, 5f, floorgroupMask.value))
@@ -60,7 +61,7 @@ public class WalkingCube : MonoBehaviour
 			MoveGroundPiece moveGroundPiece = rayHit.collider.GetComponent<MoveGroundPiece>();
 			if (moveGroundPiece != null)
 			{
-				moveGroundPiece.isActive = false;
+				moveGroundPiece.IsActive = false;
 			}
 		}
 
@@ -76,13 +77,22 @@ public class WalkingCube : MonoBehaviour
 		//Debug.DrawRay(rayStartPos, rayAimPos, Color.red, 2f);
 		if (Physics.Raycast(deathRay, out rayHit, 5f, floortileMask.value))
 		{
-			Debug.Log("hit floor");
+			//Debug.Log("hit floor");
+			ColorFloorTile(rayHit.collider.gameObject);
 		}
 		else
 		{
-			Debug.Log("you die");
+			//Debug.Log("you die");
 			isDead = true;
 		}
+	}
+
+	private void ColorFloorTile(GameObject floorObject)
+	{
+		Renderer floorRenderer = floorObject.GetComponent<Renderer>();
+		MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+		materialProperty.SetColor("_Color", trackColor);
+		floorRenderer.SetPropertyBlock(materialProperty);
 	}
 
 	IEnumerator Tumble(Vector3 direction)
