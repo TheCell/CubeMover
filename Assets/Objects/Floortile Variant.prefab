@@ -64,9 +64,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 74d0cb7156627ea4987316f787a1a85d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a04441fb041519441be6bad0b17016ee, type: 2}
     - target: {fileID: -927199367670048503, guid: 74d0cb7156627ea4987316f787a1a85d, type: 3}
       propertyPath: m_Name
-      value: Floortile
+      value: Floortile Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 74d0cb7156627ea4987316f787a1a85d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74d0cb7156627ea4987316f787a1a85d, type: 3}
