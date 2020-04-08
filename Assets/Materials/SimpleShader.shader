@@ -48,7 +48,7 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
 				col *= _Color;
-				if (_isToggled)
+				if (_isToggled == 1)
 				{
 					col.rgb += float3(0.1, 0.1, 0.1);
 				}
