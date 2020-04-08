@@ -11,6 +11,7 @@ public class WalkingCube : MonoBehaviour
 	[SerializeField] private LayerMask floorgroupMask;
 	[SerializeField] private LayerMask floortileMask;
 	[SerializeField] private Color trackColor = new Color(0.3058823f, 0.8196079f, 0.3303653f);
+	[SerializeField] PlayerPoints playerPoints;
 	private bool justMoved = false;
 	private bool isTumbling = false;
 	private bool isDead = false;
@@ -52,6 +53,19 @@ public class WalkingCube : MonoBehaviour
 		if (dir != Vector3.zero && !isTumbling)
 		{
 			StartCoroutine(Tumble(dir));
+			if (playerPoints != null)
+			{
+				playerPoints.AddMove();
+			}
+		}
+	}
+	
+	private void OnTriggerEnter(Collider other)
+	{
+		Coinlogic coinlogic = other.GetComponent<Coinlogic>();
+		if (coinlogic != null)
+		{
+			playerPoints.AddCoin();
 		}
 	}
 

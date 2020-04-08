@@ -16,4 +16,9 @@ public class Coinlogic : MonoBehaviour
 		Quaternion rotation = transform.rotation;
 		transform.Rotate(Vector3.up, turndegree * Time.deltaTime, Space.World);
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		Destroy(this.gameObject);
+	}
 }
