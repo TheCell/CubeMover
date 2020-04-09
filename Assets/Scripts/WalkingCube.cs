@@ -16,9 +16,20 @@ public class WalkingCube : MonoBehaviour
 	private bool isTumbling = false;
 	private bool isDead = false;
 	private bool animateDead = false;
-	
+	private bool startWalking = false;
+
+	public void StartWalking()
+	{
+		startWalking = true;
+	}
+
 	private void Update()
 	{
+		if (!startWalking)
+		{
+			return;
+		}
+
 		if (!isTumbling && !isDead)
 		{
 			CheckGroundAndDie();

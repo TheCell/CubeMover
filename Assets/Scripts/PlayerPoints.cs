@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerPoints : MonoBehaviour
 {
-	[SerializeField] private TMPro.TMP_Text pointText;
-	private int points = 0;
+	[SerializeField] private TMPro.TMP_Text[] pointText;
+	private static int points = 0;
 
 	public int Points {
 		get
@@ -29,13 +29,22 @@ public class PlayerPoints : MonoBehaviour
 		Points += 1;
 	}
 
+	public void ResetPoints()
+	{
+		Points = 0;
+	}
+
 	private void Start()
 	{
-		DontDestroyOnLoad(this.gameObject);
+		//DontDestroyOnLoad(this.gameObject);
+		UpdateText();
 	}
 
 	private void UpdateText()
 	{
-		pointText.text = points.ToString();
+		for (int i = 0; i < pointText.Length; i++)
+		{
+			pointText[i].text = points.ToString();
+		}
 	}
 }
