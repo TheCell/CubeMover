@@ -23,6 +23,7 @@ public class WalkingCube : MonoBehaviour
 		startWalking = true;
 	}
 
+	// Thanks to ericbegue (https://forum.unity.com/threads/cube-walking.450347/) for the cube turning script
 	private void Update()
 	{
 		if (!startWalking)
